@@ -141,26 +141,16 @@ apt-key adv --recv-keys DCC9EFBF77E11517
 apt-key adv --recv-keys 648ACFD622F3D138
 
 #
-# you can watch the debootstrap progress via
-# tail -F $HOME/$ROOTFS_TOP/debootstrap/debootstrap.log
+echo you can watch the debootstrap progress via
+echo tail -F $HOME/$ROOTFS_TOP/debootstrap/debootstrap.log
 #
 DEBOOTSTRAP_DIR="$(pwd)"
 export DEBOOTSTRAP_DIR
 O="$("$PREFIX/bin/proot" \
-    -b /system \
-    -b /vendor \
-    -b /data \
-    -b "$PREFIX/bin:/bin" \
-    -b "$PREFIX/etc:/etc" \
-    -b "$PREFIX/lib:/lib" \
-    -b "$PREFIX/share:/share" \
-    -b "$PREFIX/tmp:/tmp" \
-    -b "$PREFIX/var:/var" \
-    -b /dev \
-    -b /proc \
-    -r "$PREFIX/.." \
     -0 \
     --link2symlink \
+    -b "$PREFIX/bin":/usr/bin \
+    env \
     ./debootstrap --keyring="$PREFIX/etc/apt/trusted.gpg" \
         --foreign --arch="$ARCHITECTURE" "$VERSION" "$HOME/$ROOTFS_TOP" 2>&1 || true)"
 echo "$O" > ~/debian-on-termux_debootstrap.log
